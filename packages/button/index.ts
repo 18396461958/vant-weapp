@@ -3,9 +3,11 @@ import { button } from '../mixins/button';
 import { canIUseFormFieldButton } from '../common/version';
 
 const mixins = [button];
-if (canIUseFormFieldButton()) {
-  mixins.push('wx://form-field-button');
-}
+(async () => {
+  if (await canIUseFormFieldButton()) {
+    mixins.push('wx://form-field-button');
+  }
+})()
 
 VantComponent({
   mixins,

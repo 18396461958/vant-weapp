@@ -36,8 +36,8 @@ VantComponent({
     height: 46,
   },
 
-  created() {
-    const { statusBarHeight } = getSystemInfoSync();
+  async created() {
+    const { statusBarHeight } = await getSystemInfoSync();
 
     this.setData({
       statusBarHeight,

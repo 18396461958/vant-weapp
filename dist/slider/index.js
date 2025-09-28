@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import { VantComponent } from '../common/component';
 import { touch } from '../mixins/touch';
 import { canIUseModel } from '../common/version';
@@ -133,36 +142,38 @@ VantComponent({
             return value;
         },
         updateValue(value, end, drag) {
-            if (this.isRange(value)) {
-                value = this.handleOverlap(value).map((val) => this.format(val));
-            }
-            else {
-                value = this.format(value);
-            }
-            this.value = value;
-            const { vertical } = this.data;
-            const mainAxis = vertical ? 'height' : 'width';
-            this.setData({
-                wrapperStyle: `
+            return __awaiter(this, void 0, void 0, function* () {
+                if (this.isRange(value)) {
+                    value = this.handleOverlap(value).map((val) => this.format(val));
+                }
+                else {
+                    value = this.format(value);
+                }
+                this.value = value;
+                const { vertical } = this.data;
+                const mainAxis = vertical ? 'height' : 'width';
+                this.setData({
+                    wrapperStyle: `
           background: ${this.data.inactiveColor || ''};
           ${vertical ? 'width' : 'height'}: ${addUnit(this.data.barHeight) || ''};
         `,
-                barStyle: `
+                    barStyle: `
           ${mainAxis}: ${this.calcMainAxis()};
           left: ${vertical ? 0 : this.calcOffset()};
           top: ${vertical ? this.calcOffset() : 0};
           ${drag ? 'transition: none;' : ''}
         `,
+                });
+                if (drag) {
+                    this.$emit('drag', { value });
+                }
+                if (end) {
+                    this.$emit('change', value);
+                }
+                if ((drag || end) && (yield canIUseModel())) {
+                    this.setData({ value });
+                }
             });
-            if (drag) {
-                this.$emit('drag', { value });
-            }
-            if (end) {
-                this.$emit('change', value);
-            }
-            if ((drag || end) && canIUseModel()) {
-                this.setData({ value });
-            }
         },
         getScope() {
             return Number(this.data.max) - Number(this.data.min);

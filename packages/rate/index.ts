@@ -51,13 +51,13 @@ VantComponent({
   },
 
   methods: {
-    onSelect(event: WechatMiniprogram.CustomEvent) {
+    async onSelect(event: WechatMiniprogram.CustomEvent) {
       const { data } = this;
       const { score } = event.currentTarget.dataset;
       if (!data.disabled && !data.readonly) {
         this.setData({ innerValue: score + 1 });
 
-        if (canIUseModel()) {
+        if (await canIUseModel()) {
           this.setData({ value: score + 1 });
         }
 

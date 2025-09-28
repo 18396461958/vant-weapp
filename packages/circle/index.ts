@@ -68,34 +68,37 @@ VantComponent({
   },
 
   methods: {
-    getContext(): Promise<WechatMiniprogram.CanvasContext> {
+   async getContext(): Promise<WechatMiniprogram.CanvasContext> {
       const { type, size } = this.data;
 
-      if (type === '' || !canIUseCanvas2d()) {
+      if (type === '' || !await canIUseCanvas2d()) {
         const ctx = wx.createCanvasContext('van-circle', this);
         return Promise.resolve(ctx);
-      }
+      };
 
-      const dpr = getSystemInfoSync().pixelRatio;
 
       return new Promise((resolve) => {
-        wx.createSelectorQuery()
-          .in(this)
-          .select('#van-circle')
-          .node()
-          .exec((res) => {
-            const canvas = res[0].node;
-            const ctx = canvas.getContext(type);
+        (async () => {
+          const info = await getSystemInfoSync();
+          let dpr = info.pixelRatio;
+          wx.createSelectorQuery()
+            .in(this)
+            .select('#van-circle')
+            .node()
+            .exec((res) => {
+              const canvas = res[0].node;
+              const ctx = canvas.getContext(type);
 
-            if (!this.inited) {
-              this.inited = true;
-              canvas.width = size * dpr;
-              canvas.height = size * dpr;
-              ctx.scale(dpr, dpr);
-            }
+              if (!this.inited) {
+                this.inited = true;
+                canvas.width = size * dpr;
+                canvas.height = size * dpr;
+                ctx.scale(dpr, dpr);
+              }
 
-            resolve(adaptor(ctx));
-          });
+              resolve(adaptor(ctx));
+            });
+        })();
       });
     },
 

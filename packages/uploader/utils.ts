@@ -101,10 +101,10 @@ export function chooseFile({
   mediaType,
   extension,
 }) {
-  return new Promise<File | File[]>((resolve, reject) => {
+  return new Promise<File | File[]>(async(resolve, reject) => {
     switch (accept) {
       case 'image':
-        if (isPC || isWxWork) {
+        if (await isPC() || await isWxWork()) {
           wx.chooseImage({
             count: multiple ? Math.min(maxCount, 9) : 1,
             sourceType: capture,

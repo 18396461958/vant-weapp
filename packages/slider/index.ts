@@ -155,7 +155,7 @@ VantComponent({
       return value;
     },
 
-    updateValue(value: SliderValue, end?: boolean, drag?: boolean) {
+   async updateValue(value: SliderValue, end?: boolean, drag?: boolean) {
       if (this.isRange(value)) {
         value = this.handleOverlap(value).map((val) => this.format(val)) as [
           number,
@@ -193,7 +193,7 @@ VantComponent({
         this.$emit('change', value);
       }
 
-      if ((drag || end) && canIUseModel()) {
+      if ((drag || end) && await canIUseModel()) {
         this.setData({ value });
       }
     },

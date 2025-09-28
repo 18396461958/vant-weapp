@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import { getAllRect } from '../common/utils';
 import { VantComponent } from '../common/component';
 import { canIUseModel } from '../common/version';
@@ -47,18 +56,20 @@ VantComponent({
     },
     methods: {
         onSelect(event) {
-            const { data } = this;
-            const { score } = event.currentTarget.dataset;
-            if (!data.disabled && !data.readonly) {
-                this.setData({ innerValue: score + 1 });
-                if (canIUseModel()) {
-                    this.setData({ value: score + 1 });
+            return __awaiter(this, void 0, void 0, function* () {
+                const { data } = this;
+                const { score } = event.currentTarget.dataset;
+                if (!data.disabled && !data.readonly) {
+                    this.setData({ innerValue: score + 1 });
+                    if (yield canIUseModel()) {
+                        this.setData({ value: score + 1 });
+                    }
+                    wx.nextTick(() => {
+                        this.$emit('input', score + 1);
+                        this.$emit('change', score + 1);
+                    });
                 }
-                wx.nextTick(() => {
-                    this.$emit('input', score + 1);
-                    this.$emit('change', score + 1);
-                });
-            }
+            });
         },
         onTouchMove(event) {
             const { touchable } = this.data;

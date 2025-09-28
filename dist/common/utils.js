@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import { isDef, isNumber, isPlainObject, isPromise } from './validator';
 import { canIUseGroupSetData, canIUseNextTick, getSystemInfoSync, } from './version';
 export { isDef } from './validator';
@@ -6,14 +15,16 @@ export function range(num, min, max) {
     return Math.min(Math.max(num, min), max);
 }
 export function nextTick(cb) {
-    if (canIUseNextTick()) {
-        wx.nextTick(cb);
-    }
-    else {
-        setTimeout(() => {
-            cb();
-        }, 1000 / 30);
-    }
+    return __awaiter(this, void 0, void 0, function* () {
+        if (yield canIUseNextTick()) {
+            wx.nextTick(cb);
+        }
+        else {
+            setTimeout(() => {
+                cb();
+            }, 1000 / 30);
+        }
+    });
 }
 export function addUnit(value) {
     if (!isDef(value)) {
@@ -57,12 +68,14 @@ export function getAllRect(context, selector) {
     });
 }
 export function groupSetData(context, cb) {
-    if (canIUseGroupSetData()) {
-        context.groupSetData(cb);
-    }
-    else {
-        cb();
-    }
+    return __awaiter(this, void 0, void 0, function* () {
+        if (yield canIUseGroupSetData()) {
+            context.groupSetData(cb);
+        }
+        else {
+            cb();
+        }
+    });
 }
 export function toPromise(promiseLike) {
     if (isPromise(promiseLike)) {
@@ -81,6 +94,21 @@ export function getCurrentPage() {
     const pages = getCurrentPages();
     return pages[pages.length - 1];
 }
-export const isPC = ['mac', 'windows'].includes(getSystemInfoSync().platform);
-// 是否企业微信
-export const isWxWork = getSystemInfoSync().environment === 'wxwork';
+export const isPC = () => __awaiter(void 0, void 0, void 0, function* () {
+    const device = yield getSystemInfoSync();
+    return ['mac', 'windows'].includes(device.platform);
+});
+export const isWxWork = () => __awaiter(void 0, void 0, void 0, function* () {
+    // 更可靠的企业微信环境判断
+    let environment = undefined;
+    try {
+        // 企业微信特有的API
+        if (typeof wx.qy !== 'undefined') {
+            environment = 'wxwork';
+        }
+    }
+    catch (e) {
+        // 忽略错误
+    }
+    return environment === 'wxwork';
+});

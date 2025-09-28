@@ -55,8 +55,8 @@ VantComponent({
     itemListData: [] as Record<string, unknown>[],
   },
 
-  beforeCreate() {
-    const { windowHeight } = getSystemInfoSync();
+  async beforeCreate() {
+    const { windowHeight } = await getSystemInfoSync();
     this.windowHeight = windowHeight;
     ARRAY.push(this);
   },

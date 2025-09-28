@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import { pickExclude, isPC, isWxWork } from '../common/utils';
 import { isImageUrl, isVideoUrl } from '../common/validator';
 export function isImageFile(item) {
@@ -39,10 +48,10 @@ function formatFile(res) {
     return res.tempFiles.map((item) => (Object.assign(Object.assign({}, pickExclude(item, ['path'])), { url: item.path })));
 }
 export function chooseFile({ accept, multiple, capture, compressed, maxDuration, sizeType, camera, maxCount, mediaType, extension, }) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
         switch (accept) {
             case 'image':
-                if (isPC || isWxWork) {
+                if ((yield isPC()) || (yield isWxWork())) {
                     wx.chooseImage({
                         count: multiple ? Math.min(maxCount, 9) : 1,
                         sourceType: capture,
@@ -90,5 +99,5 @@ export function chooseFile({ accept, multiple, capture, compressed, maxDuration,
                 wx.chooseMessageFile(Object.assign(Object.assign({ count: multiple ? maxCount : 1, type: accept }, (extension ? { extension } : {})), { success: (res) => resolve(formatFile(res)), fail: reject }));
                 break;
         }
-    });
+    }));
 }

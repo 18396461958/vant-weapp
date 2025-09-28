@@ -1,15 +1,17 @@
-/// <reference types="miniprogram-api-typings" />
-interface WxWorkSystemInfo extends WechatMiniprogram.SystemInfo {
+interface CustomSystemInfo {
+    pixelRatio: number;
+    platform: string;
     environment?: 'wxwork';
+    SDKVersion: string;
+    windowHeight: number;
+    statusBarHeight: number;
 }
-interface SystemInfo extends WxWorkSystemInfo, WechatMiniprogram.SystemInfo {
-}
-export declare function getSystemInfoSync(): SystemInfo;
-export declare function canIUseModel(): boolean;
-export declare function canIUseFormFieldButton(): boolean;
-export declare function canIUseAnimate(): boolean;
-export declare function canIUseGroupSetData(): boolean;
-export declare function canIUseNextTick(): boolean;
-export declare function canIUseCanvas2d(): boolean;
+export declare function getSystemInfoSync(): Promise<CustomSystemInfo>;
+export declare function canIUseModel(): Promise<boolean>;
+export declare function canIUseFormFieldButton(): Promise<boolean>;
+export declare function canIUseAnimate(): Promise<boolean>;
+export declare function canIUseGroupSetData(): Promise<boolean>;
+export declare function canIUseNextTick(): Promise<boolean>;
+export declare function canIUseCanvas2d(): Promise<boolean>;
 export declare function canIUseGetUserProfile(): boolean;
 export {};

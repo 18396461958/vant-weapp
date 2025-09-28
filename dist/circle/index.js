@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import { BLUE, WHITE } from '../common/color';
 import { VantComponent } from '../common/component';
 import { getSystemInfoSync } from '../common/utils';
@@ -65,27 +74,33 @@ VantComponent({
     },
     methods: {
         getContext() {
-            const { type, size } = this.data;
-            if (type === '' || !canIUseCanvas2d()) {
-                const ctx = wx.createCanvasContext('van-circle', this);
-                return Promise.resolve(ctx);
-            }
-            const dpr = getSystemInfoSync().pixelRatio;
-            return new Promise((resolve) => {
-                wx.createSelectorQuery()
-                    .in(this)
-                    .select('#van-circle')
-                    .node()
-                    .exec((res) => {
-                    const canvas = res[0].node;
-                    const ctx = canvas.getContext(type);
-                    if (!this.inited) {
-                        this.inited = true;
-                        canvas.width = size * dpr;
-                        canvas.height = size * dpr;
-                        ctx.scale(dpr, dpr);
-                    }
-                    resolve(adaptor(ctx));
+            return __awaiter(this, void 0, void 0, function* () {
+                const { type, size } = this.data;
+                if (type === '' || !(yield canIUseCanvas2d())) {
+                    const ctx = wx.createCanvasContext('van-circle', this);
+                    return Promise.resolve(ctx);
+                }
+                ;
+                return new Promise((resolve) => {
+                    (() => __awaiter(this, void 0, void 0, function* () {
+                        const info = yield getSystemInfoSync();
+                        let dpr = info.pixelRatio;
+                        wx.createSelectorQuery()
+                            .in(this)
+                            .select('#van-circle')
+                            .node()
+                            .exec((res) => {
+                            const canvas = res[0].node;
+                            const ctx = canvas.getContext(type);
+                            if (!this.inited) {
+                                this.inited = true;
+                                canvas.width = size * dpr;
+                                canvas.height = size * dpr;
+                                ctx.scale(dpr, dpr);
+                            }
+                            resolve(adaptor(ctx));
+                        });
+                    }))();
                 });
             });
         },

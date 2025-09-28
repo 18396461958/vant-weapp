@@ -12,8 +12,8 @@ export function range(num: number, min: number, max: number) {
   return Math.min(Math.max(num, min), max);
 }
 
-export function nextTick(cb: (...args: any[]) => void) {
-  if (canIUseNextTick()) {
+export async function nextTick(cb: (...args: any[]) => void) {
+  if (await canIUseNextTick()) {
     wx.nextTick(cb);
   } else {
     setTimeout(() => {
@@ -81,11 +81,11 @@ export function getAllRect(
   );
 }
 
-export function groupSetData(
+export async function groupSetData(
   context: WechatMiniprogram.Component.TrivialInstance,
   cb: () => void
 ) {
-  if (canIUseGroupSetData()) {
+  if (await canIUseGroupSetData()) {
     context.groupSetData(cb);
   } else {
     cb();
@@ -114,7 +114,22 @@ export function getCurrentPage<T>() {
   return pages[pages.length - 1] as T & WechatMiniprogram.Page.TrivialInstance;
 }
 
-export const isPC = ['mac', 'windows'].includes(getSystemInfoSync().platform);
 
-// 是否企业微信
-export const isWxWork = getSystemInfoSync().environment === 'wxwork';
+export const isPC = async () => {
+  const device = await getSystemInfoSync();
+  return ['mac', 'windows'].includes(device.platform);
+};
+
+export const isWxWork = async () => {
+  // 更可靠的企业微信环境判断
+  let environment: 'wxwork' | undefined = undefined;
+  try {
+    // 企业微信特有的API
+    if (typeof wx.qy !== 'undefined') {
+      environment = 'wxwork';
+    }
+  } catch (e) {
+    // 忽略错误
+  }
+  return environment === 'wxwork';
+};

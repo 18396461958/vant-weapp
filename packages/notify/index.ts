@@ -36,8 +36,8 @@ VantComponent({
     onClick: (null as unknown) as (detail: Record<string, null>) => void,
   },
 
-  created() {
-    const { statusBarHeight } = getSystemInfoSync();
+  async created() {
+    const { statusBarHeight } = await getSystemInfoSync();
     this.setData({ statusBarHeight });
   },
 

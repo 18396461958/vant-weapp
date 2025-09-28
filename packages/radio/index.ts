@@ -52,12 +52,12 @@ VantComponent({
       });
     },
 
-    emitChange(value: boolean) {
+    async emitChange(value: boolean) {
       const instance = this.parent || this;
       instance.$emit('input', value);
       instance.$emit('change', value);
 
-      if (canIUseModel()) {
+      if (await canIUseModel()) {
         instance.setData({ value });
       }
     },

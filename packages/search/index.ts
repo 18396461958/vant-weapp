@@ -63,8 +63,8 @@ VantComponent({
   },
 
   methods: {
-    onChange(event: WechatMiniprogram.CustomEvent) {
-      if (canIUseModel()) {
+    async onChange(event: WechatMiniprogram.CustomEvent) {
+      if (await canIUseModel()) {
         this.setData({ value: event.detail });
       }
       this.$emit('change', event.detail);
@@ -75,8 +75,8 @@ VantComponent({
        * 修复修改输入框值时，输入框失焦和赋值同时触发，赋值失效
        * https://github.com/youzan/vant-weapp/issues/1768
        */
-      setTimeout(() => {
-        if (canIUseModel()) {
+      setTimeout(async () => {
+        if (await canIUseModel()) {
           this.setData({ value: '' });
         }
         this.$emit('cancel');
